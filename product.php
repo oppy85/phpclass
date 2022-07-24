@@ -24,48 +24,158 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add product</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <title>Products</title>
+    <style>
+       img{
+         height: 50px;
+         width: 50px;
+       }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
   </head>
-  <body>
-    <!--button triggers Modal   -->
-  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modallink">
-    Add product
-  </button>
-    <!--  Modal   -->
-  <div class="modal fade" tabindex="-1" id="modallink">
+<body>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Add Product
+</button>
+
+<table class="table table-hover" id="example">
+  <thead>
+    <tr>
+      <th scope="col">S/N</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Category</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Image</th>
+      <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+      include_once "dbconnect.php";
+      $sql = "SELECT * FROM  product";
+      $result = $db->query($sql);
+      $n=1;
+      foreach($result as $row){
+    ?>
+      <tr>
+      <th scope="row"><?php echo $n ?></th>
+      <td><?php echo $row["productname"] ?></td>
+      <td><?php echo $row["category"] ?></td>
+      <td><?php echo $row["price"] ?></td>
+      <td><?php echo $row["quantity"] ?></td>
+      <td><img src="images/<?php echo $row['image'] ?>"></td>
+      <td>
+        <a href="/product?prod-id=<?php echo $row["id"]?>">
+          <button type="button" name="edit" class="btn btn-outline-secondary">Edit</button>
+        </a>
+        <a href="/phpclass/product?prod-id=<?php echo $row["id"] ?>&image=<?php echo $row['image']
+        ?>">
+          <button type="button" name="delete" class="btn btn-outline-danger" 
+                 onclick="return confirm('Are you sure?')">Delete</button>
+        </a>
+      </td>
+      </tr>
+
+    <?php $n++; } ?>
+  </tbody>
+</table>  
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Enter Product Information</h5>
+        <h4 class="modal-title">Enter Product Information</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-      <br/>
-      <form method = POST action = "">
-      <input type = "text" placeholder = "Product Name" name = "prod-name" class="form-control">
-      <br/>
-      <input type = "text" placeholder = "Product Category" name = "prod-category" class="form-control">
-      <br/>
-      <input type = "number" placeholder = "Product Price" min="1" name = "prod-price" class="form-control">
-      <br/>
-      <input type = "number" placeholder = "Product Quantity" min="1" name = "prod-quantity" class="form-control">
-      <br/>
+      <div class="mb-3">
+      <form method="POST" enctype="multipart/form-data" action="">
 
-      <label for="img">Select Image:</label>
-      <input type="file" id="img" name="img" accept="image/*">
-      <br/>
-      </form>
+      <input type="text" class="form-control" name="prod-name" placeholder="Product Name" required><br/>
+      <input type="text" class="form-control" name="prod-cate" placeholder="Product Category" required><br/>
+      <input type="number" class="form-control" name="prod-price" placeholder="Product Price" required><br/>
+      <input type="number" class="form-control" name="prod-quantity" placeholder="Product Quantity" required><br/>
+      <input type="file" class="form-control" name="prod-image" accept="image/*">
+
       </div>
+     </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type = "submit" name ="submit" value="submit"class="btn btn-primary btn-lg">
+        <button type="submit" class="btn btn-primary" name="add-product">Add Product</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
- </body>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<script>
+     $(document).ready(function() {
+     $('#example').DataTable();
+    } );
+</script>
+</body>
 </html>
+
+<?php
+include_once "dbconnect.php";
+
+if(isset($_POST["add-product"]))
+  {
+    $name = $_REQUEST["prod-name"];
+    $cate = $_REQUEST["prod-cate"];
+    $price = $_REQUEST["prod-price"];
+    $quant = $_REQUEST["prod-quantity"];
+  
+    $filen = $_FILES['prod-image']['name'];
+    if($filen == NULL){
+      $filen = "noimage.jpg";
+      $sql = "INSERT INTO product(productname, category, price, quantity, image) 
+                  Values('$name', '$cate', '$price', '$quant','$filen')";
+      $db->query($sql);
+     // echo "<meta http-equiv='refresh' content='0'>";
+      echo "<script>window.location.href='product.php';</script>";
+    }
+    else{
+      $tmpn = $_FILES['prod-image']['tmp_name'];
+      $imgsize = $_FILES['prod-image']['size'];
+      $ext = strtolower(pathinfo($filen, PATHINFO_EXTENSION));
+
+      // generate random number
+      $tmp = range(1,99);
+      $num = array_rand($tmp,10);
+      $nimage = implode($num).".".$ext;
+
+      if($imgsize < 6000000){
+        move_uploaded_file($tmpn, "images/".$nimage);
+      }
+      $sql = "INSERT INTO product(productname, category, price, quantity, image) 
+                  Values('$name', '$cate', '$price', '$quant','$nimage')";
+      $db->query($sql);
+      //echo "<meta http-equiv='refresh' content='0'>";
+      echo "<script>window.location.href='product.php';</script>";
+    }
+    
+ }
+elseif(isset($_GET["prod-id"]) && isset($_GET["image"])){
+   $id = $_GET['prod-id'];
+   $dimage = $_GET['image'];
+
+    $path = "images/".$dimage;
+    if($dimage != "noimage.jpg" && (file_exists("images/".$dimage))){
+       unlink($path);
+    }
+    $sql = "DELETE FROM product where id=$id";
+    $db->query($sql);
+    echo "<script>window.location.href='product.php';</script>";
+}
+?>
